@@ -87,7 +87,7 @@ public class MysqlDataHandler implements IDataHandler {
 				sb.append(")");
 
 				String insertSql = sb.toString();
-
+				logger.info("Sql from insert data:{}"+insertSql);
 				jdbcTemplate.batchUpdate(insertSql,
 						new BatchPreparedStatementSetter() {
 
