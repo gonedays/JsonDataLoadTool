@@ -1,0 +1,85 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+ 
+ buildscript {
+    repositories {        
+       jcenter()     
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.2.RELEASE")
+    }
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+springBoot {
+    mainClass = "cn.com.nisong.Main"
+}
+
+task "createDirs" << {
+   sourceSets*.java.srcDirs*.each { it.mkdirs() }
+   sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+task copyJars(type: Copy) {
+  from configurations.runtime
+  into 'build/libs'    
+}
+
+task copyScript(type: Copy) {
+  from 'bin'
+  into 'build'
+    
+}
+
+task copyResources(type: Copy) {
+  from 'src/main/resources'
+  into 'build/conf'
+    
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.11'  
+}
+
+
+sourceSets {
+    main {
+        resources {
+            exclude '*'           
+        }
+    }
+}
+
+
+jar {
+    baseName = 'JsonDataLoadTool'
+    version =  '0.0.1-SNAPSHOT'
+    manifest {
+         attributes 'Main-Class': 'cn.com.nisong.Main'                 
+      }
+    exclude('*.json','*.yml','*.xml')
+}
+
+repositories {
+ 	mavenLocal()   
+    mavenCentral()
+    jcenter()  
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter")   
+    compile("org.springframework.boot:spring-boot-starter-jdbc"){
+    	exclude group:'org.apache.tomcat', module:'org.slf4j:tomcat-jdbc'
+    }
+    compile('com.alibaba:druid:1.0.17')
+    compile('mysql:mysql-connector-java:5.1.38')    
+    compile('dom4j:dom4j:1.6.1')
+    compile('com.alibaba:fastjson:1.2.7')
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+build.dependsOn copyJars
+build.dependsOn copyScript
+build.dependsOn copyResources

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <columns>
+	      <code>int</code>
+	      <price>double</price>
+	      <name>varchar</name>
+</columns> 
